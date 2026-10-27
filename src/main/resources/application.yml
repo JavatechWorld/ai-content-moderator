@@ -1,0 +1,66 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: ai-content-moderator
+
+  mvc:
+    async:
+      request-timeout: 130s
+
+  ai:
+    #ollama:
+     # base-url: http://localhost:11434
+      #chat:
+       # model: llama3.1
+        #options:
+         # temperature: 0.1
+    # --- To use OpenAI instead of local Ollama ---
+    # 1. Replace the ollama starter in pom.xml with spring-ai-openai-spring-boot-starter
+    # 2. Uncomment below and set OPENAI_API_KEY as an env var
+      openai:
+        api-key:
+        chat:
+          options:
+            model: gpt-4o-mini
+            temperature: 0.1
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,circuitbreakers
+  endpoint:
+    health:
+      show-details: always
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      moderationService:
+        register-health-indicator: true
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 15s
+        permitted-number-of-calls-in-half-open-state: 3
+        automatic-transition-from-open-to-half-open-enabled: true
+
+  retry:
+    instances:
+      moderationService:
+        max-attempts: 3
+        wait-duration: 500ms
+        retry-exceptions:
+          - java.io.IOException
+          - org.springframework.web.client.ResourceAccessException
+  timelimiter:
+    instances:
+      moderationService:
+        timeout-duration: 120s
+
+logging:
+  level:
+    com.learn.aimoderator: INFO
+    org.springframework.ai: WARN

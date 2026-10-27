@@ -1,0 +1,8 @@
+com\learn\aimoderator\model\ModerationRequest.class
+com\learn\aimoderator\controller\ModerationController.class
+com\learn\aimoderator\service\ModerationService.class
+com\learn\aimoderator\AiContentModeratorApplication.class
+com\learn\aimoderator\config\ChatClientConfig.class
+com\learn\aimoderator\exception\GlobalExceptionHandler.class
+com\learn\aimoderator\model\ModerationCategory.class
+com\learn\aimoderator\model\ModerationResult.class
